@@ -6,9 +6,10 @@ class StepTest{
     this.interval = 0;
     this.callbacks = {};
     this.logs = [];
+    this.assertions = [];
     let t = this;
     this.on("finished", function(data){
-      this.constructor.trigger("test.finished", data);
+      this.constructor.trigger("test.finished", this);
       this.constructor.log(this.logs.join("\n"))
     })
     this.on("assertion.passed", function(message){
@@ -61,9 +62,15 @@ class StepTest{
       this.trigger('assertion.passed', `Passed: ${e.name}`);
     }else{
       this.trigger('assertion.failed', `Failed: ${e.name}`);
-      throw `Failed: ${e.name}`;
     }
+    this.assertions.push(assertion);
     return this;
+  }
+  isSuccess(){
+    let assertions = this.assertions.filter(function(assert){
+      return assert != true;
+    })
+    return assertions.length == 0;
   }
   nextEvent(){
     if(!this.started){
@@ -201,6 +208,7 @@ class StepTest{
     this.tests = [];
   }
 }
+
 StepTest.showPosition = true;
 StepTest.callbacks = {};
 StepTest.steps = [];

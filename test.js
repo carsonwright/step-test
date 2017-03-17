@@ -12,7 +12,7 @@ StepTest.addStep("Remove 1 from Scratch", function(t){
   return this.scratch -= 1;
 })
 
-t = StepTest.test("Test Scratch");
+t = StepTest.test("Test Scratch 1");
 t.step("Set Scratch To 1");
 t.step("Add 1 to Scratch");
 t.step("Add 1 to Scratch");

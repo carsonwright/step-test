@@ -8,14 +8,33 @@ var StepTest = function () {
   function StepTest(name) {
     _classCallCheck(this, StepTest);
 
+    this.id = this.constructor.length - 1;
     this.name = name;
     this.events = [];
     this.interval = 0;
-    this.callbacks = [];
+    this.callbacks = {};
+    this.logs = [];
+    this.assertions = [];
+    var t = this;
+    this.on("finished", function (data) {
+      this.constructor.trigger("test.finished", this);
+      this.constructor.log(this.logs.join("\n"));
+    });
+    this.on("assertion.passed", function (message) {
+      this.constructor.trigger("test.assertion.passed", { name: name, message: message });
+    });
+    this.on("assertion.failed", function (data) {
+      this.constructor.trigger("test.assertion.failed", { name: name, message: message });
+    });
     return this;
   }
 
   _createClass(StepTest, [{
+    key: "async",
+    value: function async(cb) {
+      this.async = true;
+    }
+  }, {
     key: "step",
     value: function step(name, options) {
       var cb = this.constructor.steps[name];
@@ -30,6 +49,10 @@ var StepTest = function () {
     key: "expect",
     value: function expect(name, cb) {
       var t = this;
+      if (!cb) {
+        cb = function cb() {};
+        name += " - PENDING";
+      }
       this.events.push({ name: name, cb: cb });
       return this;
     }
@@ -38,11 +61,21 @@ var StepTest = function () {
     value: function ok(assertion) {
       var e = this.events[this.position - 1];
       if (assertion) {
-        console.log("Passed: " + e.name);
+        this.log("Passed: " + e.name);
+        this.trigger('assertion.passed', "Passed: " + e.name);
       } else {
-        throw "Failed: " + e.name;
+        this.trigger('assertion.failed', "Failed: " + e.name);
       }
+      this.assertions.push(assertion);
       return this;
+    }
+  }, {
+    key: "isSuccess",
+    value: function isSuccess() {
+      var assertions = this.assertions.filter(function (assert) {
+        return assert != true;
+      });
+      return assertions.length == 0;
     }
   }, {
     key: "nextEvent",
@@ -60,9 +93,14 @@ var StepTest = function () {
         return this;
       }
 
-      console.log(index + 1 + " - " + event.name);
-      if (typeof event.cb.apply(this) != "undefined") {
+      var log = this.constructor.showPosition ? [index + 1, "-"] : [];
+      log.push(event.name);
+      this.log(log.join(" "));
+      this.async = false;
+      event.cb.apply(this);
+      if (!this.async) {
         this.end();
+        this.async = false;
       }
 
       return this;
@@ -89,8 +127,10 @@ var StepTest = function () {
     key: "end",
     value: function end() {
       var t = this;
-      if (!this.events[this.position]) {
+      if (!this.events[this.position] && this.status != "finished") {
+        this.status = "finished";
         this.trigger("finished");
+        return null;
       }
       if (this.mode == "play") {
         if (typeof this.interval == "number") {
@@ -108,6 +148,7 @@ var StepTest = function () {
     value: function play() {
       this.start();
       this.mode = "play";
+      this.status = "playing";
       this.nextEvent();
       return this;
     }
@@ -115,11 +156,20 @@ var StepTest = function () {
     key: "pause",
     value: function pause() {
       this.mode = "pause";
+      this.status = "paused";
+      return this;
+    }
+  }, {
+    key: "log",
+    value: function log(content) {
+      this.logs.push(content);
       return this;
     }
   }, {
     key: "start",
     value: function start() {
+      this.log("Started Test " + this.name);
+      this.status = "started";
       this.position = 0;
       this.started = true;
       return this;
@@ -158,11 +208,67 @@ var StepTest = function () {
       }
       return this;
     }
+  }, {
+    key: "log",
+    value: function log(content) {
+      var c = void 0;
+      c += "\n";
+      c = "=======================================================\n";
+      c += content;
+      c += "\n-------------------------------------------------------";
+      c += "\n";
+      console.log(c);
+      return this;
+    }
+  }, {
+    key: "play",
+    value: function play() {
+      this.start();
+      this.tests.forEach(function (test) {
+        test.play();
+      });
+      return this;
+    }
+  }, {
+    key: "on",
+    value: function on(key, callback) {
+      this.callbacks[key] = this.callbacks[key] || [];
+      this.callbacks[key].push(callback);
+      return this;
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(key, options) {
+      var t = this;
+      (this.callbacks[key] || []).forEach(function (cb) {
+        cb.apply(t, [options]);
+      });
+      return this;
+    }
+  }, {
+    key: "start",
+    value: function start() {
+      this.on("test.finished", function () {
+        var finished = this.tests.filter(function (test) {
+          return test.status == "finished";
+        });
+        if (finished.length == this.tests.length) {
+          this.trigger("finished");
+        }
+      });
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.tests = [];
+    }
   }]);
 
   return StepTest;
 }();
 
+StepTest.showPosition = true;
+StepTest.callbacks = {};
 StepTest.steps = [];
 StepTest.tests = [];
 module.exports = StepTest;
