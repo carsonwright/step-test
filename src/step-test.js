@@ -1,9 +1,22 @@
 class StepTest{
   constructor(name){
+    this.id = this.constructor.length - 1;
     this.name = name;
     this.events = [];
     this.interval = 0;
-    this.callbacks = [];
+    this.callbacks = {};
+    this.logs = [];
+    let t = this;
+    this.on("finished", function(data){
+      this.constructor.trigger("test.finished", data);
+      this.constructor.log(this.logs.join("\n"))
+    })
+    this.on("assertion.passed", function(message){
+      this.constructor.trigger("test.assertion.passed", {name, message});
+    })
+    this.on("assertion.failed", function(data){
+      this.constructor.trigger("test.assertion.failed", {name, message});
+    })
     return this;
   }
   static test(name){
@@ -20,27 +33,34 @@ class StepTest{
     }
     return this;
   }
+  async(cb){
+    this.async = true;
+  }
   step(name, options){
     let cb = this.constructor.steps[name];
     if(!cb){
       name = `${name} - PENDING`
-      cb = function(){
-        
-      }
+      cb = function(){}
     }
     this.events.push({name, cb, options})
     return this;
   }
   expect(name, cb){
     let t = this;
+    if(!cb){
+      cb = function(){};
+      name += " - PENDING"
+    }
     this.events.push({name, cb})
     return this;
   }
   ok(assertion){
     let e = this.events[this.position - 1];
     if(assertion){
-      console.log(`Passed: ${e.name}`)
+      this.log(`Passed: ${e.name}`);
+      this.trigger('assertion.passed', `Passed: ${e.name}`);
     }else{
+      this.trigger('assertion.failed', `Failed: ${e.name}`);
       throw `Failed: ${e.name}`;
     }
     return this;
@@ -59,9 +79,14 @@ class StepTest{
       return this;
     }
 
-    console.log(`${index + 1} - ${event.name}`)
-    if(typeof event.cb.apply(this) != "undefined"){
+    let log = this.constructor.showPosition ? [index + 1, "-" ]: []
+    log.push(event.name)
+    this.log(log.join(" "))
+    this.async = false;
+    event.cb.apply(this);
+    if(!this.async){
       this.end();
+      this.async = false;
     }
 
     return this;
@@ -82,8 +107,10 @@ class StepTest{
   }
   end(){
     let t = this;
-    if(!this.events[this.position]){
+    if(!this.events[this.position] && this.status != "finished"){
+      this.status = "finished";
       this.trigger("finished");
+      return null;
     }
     if(this.mode == "play"){
       if(typeof this.interval == "number"){
@@ -99,31 +126,83 @@ class StepTest{
   play(){
     this.start()
     this.mode = "play";
+    this.status = "playing";
     this.nextEvent();
     return this;
   }
   pause(){
     this.mode = "pause";
+    this.status = "paused";
+    return this;
+  }
+  log(content){
+    this.logs.push(content);
     return this;
   }
   start(){
+    this.log(`Started Test ${this.name}`);
+    this.status = "started";
     this.position = 0;
     this.started = true;
     return this;
   }
   on(key, callback){
-    this.callbacks[key] = this.callbacks[key] || []
+    this.callbacks[key] = this.callbacks[key] || [];
     this.callbacks[key].push(callback);
     return this;
   }
   trigger(key, options){
     let t = this;
     (this.callbacks[key] || []).forEach(function(cb){
+      cb.apply(t, [options]);
+    })
+    return this;
+  }
+  static log(content){
+    let c;
+    c += "\n";
+    c  = "=======================================================\n";
+    c += content;
+    c += "\n-------------------------------------------------------"
+    c += "\n";
+    console.log(c);
+    return this;
+  }
+  static play(){
+    this.start();
+    this.tests.forEach(function(test){
+      test.play();
+    })
+    return this;
+  }
+  static on(key, callback){
+    this.callbacks[key] = this.callbacks[key] || []
+    this.callbacks[key].push(callback);
+    return this; 
+  }
+  static trigger(key, options){
+    let t = this;
+    (this.callbacks[key] || []).forEach(function(cb){
       cb.apply(t, [options])
     })
     return this;
   }
+  static start(){
+    this.on("test.finished", function(){
+      let finished = this.tests.filter(function(test){
+        return test.status == "finished";
+      })
+      if(finished.length == this.tests.length){
+        this.trigger("finished")
+      }
+    })
+  }
+  static reset(){
+    this.tests = [];
+  }
 }
+StepTest.showPosition = true;
+StepTest.callbacks = {};
 StepTest.steps = [];
 StepTest.tests = [];
 module.exports = StepTest;

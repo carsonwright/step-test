@@ -25,8 +25,21 @@ t.step("Remove 1 from Scratch");
 t.expect("Scratch Should Equal 1", function(){
   return this.ok(this.scratch == 1);
 })
-t.step("Build something More!")
-t.play()
-t.on("finished", function(){
-  console.log("DONE");
+t.step("Build something More!");
+
+t1 = StepTest.test("Test Scratch 2");
+t1.step("Set Scratch To 1");
+t1.step("Add 1 to Scratch");
+t1.step("Remove 1 from Scratch");
+t1.expect("Scratch should Equal 1", function(){
+  return this.ok(this.scratch == 1);
 })
+
+t2 = StepTest.test("Test Scratch 3")
+t2.step("Set Scratch To 1");
+t2.step("Remove 1 from Scratch");
+t2.expect("Scratch should Equal 0", function(){
+  return this.ok(this.scratch == 0);
+})
+t2.expect("This should not error but instead be ... ");
+StepTest.play();
