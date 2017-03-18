@@ -1,6 +1,6 @@
 {
   "name": "step-test",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A test helper for running items step by step",
   "main": "./build/step-test.js",
   "scripts": {

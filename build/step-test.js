@@ -271,4 +271,6 @@ StepTest.showPosition = true;
 StepTest.callbacks = {};
 StepTest.steps = [];
 StepTest.tests = [];
-module.exports = StepTest;
+if (typeof module != "undefined") {
+  module.exports = StepTest;
+}
