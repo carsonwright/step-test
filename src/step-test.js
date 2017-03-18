@@ -15,7 +15,7 @@ class StepTest{
     this.on("assertion.passed", function(message){
       this.constructor.trigger("test.assertion.passed", {name, message});
     })
-    this.on("assertion.failed", function(data){
+    this.on("assertion.failed", function(message){
       this.constructor.trigger("test.assertion.failed", {name, message});
     })
     return this;

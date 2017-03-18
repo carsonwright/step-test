@@ -23,7 +23,7 @@ var StepTest = function () {
     this.on("assertion.passed", function (message) {
       this.constructor.trigger("test.assertion.passed", { name: name, message: message });
     });
-    this.on("assertion.failed", function (data) {
+    this.on("assertion.failed", function (message) {
       this.constructor.trigger("test.assertion.failed", { name: name, message: message });
     });
     return this;
