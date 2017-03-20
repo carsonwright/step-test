@@ -35,7 +35,8 @@ StepTest.addStep("Mount UserComponent", function(){
 })
 ```
 
-### Async Steps
+#### Async Steps
+The use of Defer and Resolve much like a promise are provided for async tests.
 ```
 StepTest.addStep("Test Async", function(){
   var t = this.defer()
@@ -44,6 +45,16 @@ StepTest.addStep("Test Async", function(){
     t.resolve();
   }, 1000)
 })
+```
+
+#### Step Sets
+If you find you have a number of steps that you want to test independently but you don't want to refer to them in every test after that just put their names inta an array with a new name and add them as if they are a step.
+```
+StepTest.addStep("Setup Form", [
+  "Mount UserComponent",
+  "Enter Email",
+  "Enter Password"
+])
 ```
 
 ### Tests
