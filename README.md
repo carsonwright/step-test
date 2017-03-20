@@ -10,7 +10,12 @@ StepTest.test("My Test")
 ```
 This means you can use class inheritance, and can change the class prototype. Any shared test data can also be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
 
-Tests are broken up into reusable steps that are then stacked up with expectations on the test instantiation.
+#### addStep vrs Step
+* addStep {Class Level} - Tests are broken up into reusable steps and attached to to the class
+* step {Instance Level} - Steps are then stacked up with expectations to create the test.
+
+#### Parallelism and Isolation
+All testing is done in parallel so don't write tests that rely on each other, each test must be designed to operate independently.
 
 ### Setup
 ```
@@ -53,3 +58,6 @@ StepTest.test("Awesome")
 })
 .play()
 ```
+
+### Debugging
+You may have noticed that ```.play()``` is available, ```.pause()``` is also available, and ```.next()```. These functions can be run in a step and give you control over when each step advances, this strategy can be extremely helpful when trying to find the offending step as you can keep checking your test and then running ```.next()``` until you find where things went wrong.
