@@ -35,7 +35,7 @@ StepTest.addStep("Mount UserComponent", function(){
 .addStep("Enter Email", function(){
   this.scratch.querySelector("#email").value = "here";
 })
-.addStep("Enter Password", function(t){
+.addStep("Enter Password", function(){
   this.scratch.querySelector("#password").value = "here is password";
 })
 ```
