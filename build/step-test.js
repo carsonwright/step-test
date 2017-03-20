@@ -287,7 +287,8 @@ var StepTest = function () {
     value: function helpers() {
       this.addStep("On", function (item, key) {
         var s = this.defer();
-        item.on(key, function () {
+
+        this[item].on(key, function () {
           s.resolve();
         });
       });

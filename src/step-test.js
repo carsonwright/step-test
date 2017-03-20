@@ -227,7 +227,8 @@ class StepTest{
   static helpers(){
     this.addStep("On", function(item, key){
       let s = this.defer();
-      item.on(key, function(){
+      
+      this[item].on(key, function(){
         s.resolve();
       })
     })
