@@ -35,11 +35,19 @@ StepTest.addStep("Mount UserComponent", function(){
 })
 ```
 
+#### Arguments
+```
+StepTest.addStep("Test Name", function(name){
+  console.log(name);
+  this.name = name;
+})
+```
+
 #### Async Steps
 The use of Defer and Resolve much like a promise are provided for async tests.
 ```
 StepTest.addStep("Test Async", function(){
-  var t = this.defer()
+  var t = this.defer();
   setTimeout(function(){
     // Do something
     t.resolve();
@@ -69,7 +77,15 @@ StepTest.test("Awesome")
 })
 .play()
 ```
+#### Arguments
+```
+StepTest.test("User Test")
+        .step("Test Name", "Carson Wright")
+        .expect("Name should be Carson Wright", function(){
+          this.ok(this.name == "Carson Wright")
+        })
 
+```
 ### Debugging
 You may have noticed that ```.play()``` is available, ```.pause()``` is also available, and ```.next()```. These functions can be run in a step and give you control over when each step advances, this strategy can be extremely helpful when trying to find the offending step as you can keep checking your test and then running ```.next()``` until you find where things went wrong.
 
