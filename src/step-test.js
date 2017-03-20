@@ -7,6 +7,7 @@ class StepTest{
     this.callbacks = {};
     this.logs = [];
     this.assertions = [];
+    this.tags = []
     let t = this;
     this.on("finished", function(data){
       this.constructor.trigger("test.finished", this);
@@ -34,8 +35,13 @@ class StepTest{
     }
     return this;
   }
-  async(cb){
-    this.async = true;
+  defer(){
+    this.deferred = true;
+    return this;
+  }
+  tag(tag){
+    this.tags.push(tag);
+    return this;
   }
   step(name, options){
     let cb = this.constructor.steps[name];
@@ -43,7 +49,14 @@ class StepTest{
       name = `${name} - PENDING`;
       cb = function(){};
     }
-    this.events.push({name, cb, options});
+    if(Array.isArray(cb)){
+      let s = this;
+      cb.forEach(function(_s){
+        s.step(_s)
+      })
+    }else{
+      this.events.push({name, cb, options});    
+    }
     return this;
   }
   expect(name, cb){
@@ -89,11 +102,11 @@ class StepTest{
     let log = this.constructor.showPosition ? [index + 1, "-" ]: []
     log.push(event.name);
     this.log(log.join(" "));
-    this.async = false;
+    this.deferred = false;
     event.cb.apply(this);
-    if(!this.async){
+    if(!this.deferred){
       this.end();
-      this.async = false;
+      this.deferred = false;
     }
 
     return this;
@@ -158,6 +171,9 @@ class StepTest{
     this.callbacks[key].push(callback);
     return this;
   }
+  resolve(){
+    this.end()
+  }
   trigger(key, options){
     let t = this;
     (this.callbacks[key] || []).forEach(function(cb){
@@ -207,7 +223,18 @@ class StepTest{
   static reset(){
     this.tests = [];
   }
+
+  static helpers(){
+    this.addStep("On", function(item, key){
+      let s = this.defer();
+      item.on(key, function(){
+        s.resolve();
+      })
+    })
+  }
 }
+
+
 
 StepTest.showPosition = true;
 StepTest.callbacks = {};

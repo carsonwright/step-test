@@ -15,6 +15,7 @@ var StepTest = function () {
     this.callbacks = {};
     this.logs = [];
     this.assertions = [];
+    this.tags = [];
     var t = this;
     this.on("finished", function (data) {
       this.constructor.trigger("test.finished", this);
@@ -30,9 +31,16 @@ var StepTest = function () {
   }
 
   _createClass(StepTest, [{
-    key: "async",
-    value: function async(cb) {
-      this.async = true;
+    key: "defer",
+    value: function defer() {
+      this.deferred = true;
+      return this;
+    }
+  }, {
+    key: "tag",
+    value: function tag(_tag) {
+      this.tags.push(_tag);
+      return this;
     }
   }, {
     key: "step",
@@ -42,7 +50,14 @@ var StepTest = function () {
         name = name + " - PENDING";
         cb = function cb() {};
       }
-      this.events.push({ name: name, cb: cb, options: options });
+      if (Array.isArray(cb)) {
+        var s = this;
+        cb.forEach(function (_s) {
+          s.step(_s);
+        });
+      } else {
+        this.events.push({ name: name, cb: cb, options: options });
+      }
       return this;
     }
   }, {
@@ -96,11 +111,11 @@ var StepTest = function () {
       var log = this.constructor.showPosition ? [index + 1, "-"] : [];
       log.push(event.name);
       this.log(log.join(" "));
-      this.async = false;
+      this.deferred = false;
       event.cb.apply(this);
-      if (!this.async) {
+      if (!this.deferred) {
         this.end();
-        this.async = false;
+        this.deferred = false;
       }
 
       return this;
@@ -182,6 +197,11 @@ var StepTest = function () {
       return this;
     }
   }, {
+    key: "resolve",
+    value: function resolve() {
+      this.end();
+    }
+  }, {
     key: "trigger",
     value: function trigger(key, options) {
       var t = this;
@@ -261,6 +281,16 @@ var StepTest = function () {
     key: "reset",
     value: function reset() {
       this.tests = [];
+    }
+  }, {
+    key: "helpers",
+    value: function helpers() {
+      this.addStep("On", function (item, key) {
+        var s = this.defer();
+        item.on(key, function () {
+          s.resolve();
+        });
+      });
     }
   }]);
 
