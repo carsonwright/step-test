@@ -17,6 +17,10 @@ This means you can use class inheritance, and can change the class prototype. An
 #### Parallelism and Isolation
 All testing is done in parallel so don't write tests that rely on each other, each test must be designed to operate independently.
 
+## WARNING
+Shorthand es6 arrow functions may not work correctly with this framework since ```this``` may not actually be ```this```.
+It is recomended that you use the es5 ```function(){}``` instead of ```()=>{}```.
+
 ### Setup
 ```
 import StepTest from 'step-test';
