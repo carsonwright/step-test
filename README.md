@@ -20,7 +20,8 @@ All testing is done in parallel so don't write tests that rely on each other, ea
 ## WARNING
 Shorthand es6 arrow functions may not work correctly with this framework since ```this``` may not actually be ```this```.
 It is recomended that you use the es5 ```function(){}``` instead of ```()=>{}```.
-
+If you rely on linting heavily here is a solution to ignore the longhand function usage.
+http://stackoverflow.com/questions/27732209/turning-off-eslint-rule-for-a-specific-line
 ### Setup
 ```
 import StepTest from 'step-test';
