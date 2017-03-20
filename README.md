@@ -34,7 +34,7 @@ StepTest.test("Awesome")
 .step("Enter Password")
 .step("Test Async")
 .expect("Should Render UserForm", function(){
-  return expect(t.scratch.innerHTML).to.be("<div></div>");
+  return this.ok(t.scratch.innerHTML == "<div></div>"); // Chai can be used and it is suggested
 })
 .play()
 ```
