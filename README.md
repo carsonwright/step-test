@@ -1,3 +1,15 @@
+# Step Test
+This framework operates much like cucumber but is class based. 
+```
+test = new StepTest()
+test.name = "My Test"
+``` 
+Is the same as 
+```
+StepTest.test("My Test")
+```
+This means you can use class inheritance additons to the prototype and any shared test data can be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
+
 ### Setup
 ```
 import StepTest from 'step-test';
