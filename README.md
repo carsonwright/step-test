@@ -8,7 +8,9 @@ Is the same as
 ```
 StepTest.test("My Test")
 ```
-This means you can use class inheritance additons to the prototype and any shared test data can be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
+This means you can use class inheritance, and can change the class prototype. Any shared test data can also be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
+
+Tests are broken up into reusable steps that are then stacked up with expectations on the test instantiation.
 
 ### Setup
 ```
@@ -27,6 +29,7 @@ StepTest.addStep("Mount UserComponent", function(){
   this.scratch.querySelector("#password").value = "here is password";
 })
 ```
+
 ### Async Steps
 ```
 StepTest.addStep("Test Async", function(){
