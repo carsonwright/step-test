@@ -112,9 +112,9 @@ var StepTest = function () {
       log.push(event.name);
       this.log(log.join(" "));
       this.deferred = false;
-      event.cb.apply(this);
+      event.cb.apply(this, [event.options]);
       if (!this.deferred) {
-        this.end();
+        this.resolve();
         this.deferred = false;
       }
 
@@ -285,7 +285,7 @@ var StepTest = function () {
   }, {
     key: "helpers",
     value: function helpers() {
-      this.addStep("On", function (item, key) {
+      this.addStep("Wait For", function (item, key) {
         var s = this.defer();
 
         this[item].on(key, function () {

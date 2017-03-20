@@ -103,9 +103,9 @@ class StepTest{
     log.push(event.name);
     this.log(log.join(" "));
     this.deferred = false;
-    event.cb.apply(this);
+    event.cb.apply(this, [event.options]);
     if(!this.deferred){
-      this.end();
+      this.resolve();
       this.deferred = false;
     }
 
@@ -225,7 +225,7 @@ class StepTest{
   }
 
   static helpers(){
-    this.addStep("On", function(item, key){
+    this.addStep("Wait For", function(item, key){
       let s = this.defer();
       
       this[item].on(key, function(){
