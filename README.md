@@ -73,14 +73,14 @@ StepTest.addStep("Setup Form", [
 ### Tests
 ```
 StepTest.test("Awesome")
-.step("Mount UserComponent")
-.step("Enter Email")
-.step("Enter Password")
-.step("Test Async")
-.expect("Should Render UserForm", function(){
-  return this.ok(t.scratch.innerHTML == "<div></div>"); // Chai can be used and it is suggested
-})
-.play()
+        .step("Mount UserComponent")
+        .step("Enter Email")
+        .step("Enter Password")
+        .step("Test Async")
+        .expect("Should Render UserForm", function(){
+          return this.ok(t.scratch.innerHTML == "<div></div>"); // Chai can be used and it is suggested
+        })
+        .play()
 ```
 #### Arguments
 ```
