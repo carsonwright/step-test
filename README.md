@@ -6,7 +6,7 @@ test.name = "My Test"
 ``` 
 Is the same as 
 ```
-StepTest.test("My Test")
+test = StepTest.test("My Test")
 ```
 This means you can use class inheritance, and can change the class prototype. Any shared test data can also be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
 
