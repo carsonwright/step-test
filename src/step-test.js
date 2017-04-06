@@ -46,8 +46,9 @@ class StepTest{
     this.tags.push(tag);
     return this;
   }
-  group(group){
-    this.group = group;
+  tags(tags){
+    this.tags = this.tags.concat(tags);
+    return this;
   }
   step(name, options){
     let cb = this.constructor.steps[name];
