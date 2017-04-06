@@ -84,6 +84,7 @@ StepTest.test("Awesome")
 ```
 
 ### Test with Inline Step Declaration
+You can use an inline step declaration if you have not previously declared a step at the class level with the same name.
 ```
 StepTest.test("Awesome")
         .step("Mount UserComponent")
