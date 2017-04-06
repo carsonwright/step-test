@@ -142,6 +142,6 @@ In this example it would play all tests that have a tag with "File1" or an event
 
 ```
 StepTest.play(function(test){
-  return test.tags.indexOf("File1") || test.events.map((e)=> e.name ).indexOf("Accepts")
+  return test.tags.indexOf("File1") != -1 || test.events.map((e)=> e.name ).indexOf("Accepts") != -1
 })
 ```
