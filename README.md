@@ -89,6 +89,9 @@ StepTest.test("Awesome")
         .step("Mount UserComponent")
         .step("Enter Email")
         .step("Enter Password")
+         /////////////////////////////////////////
+         // Inline Declaration
+         /////////////////////////////////////////
         .step("Check Remember Me", function(){
           var rememberMe = this.scratch.querySelector("#remember-me");
           ReactSimulateClick(rememberMe);
