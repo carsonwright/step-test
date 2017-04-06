@@ -47,8 +47,12 @@ var StepTest = function () {
     value: function step(name, options) {
       var cb = this.constructor.steps[name];
       if (!cb) {
-        name = name + " - PENDING";
-        cb = function cb() {};
+        if (typeof options == "function") {
+          cb = options;
+        } else {
+          name = name + " - PENDING";
+          cb = function cb() {};
+        }
       }
       if (Array.isArray(cb)) {
         var s = this;
@@ -80,6 +84,7 @@ var StepTest = function () {
         this.trigger('assertion.passed', "Passed: " + e.name);
       } else {
         this.trigger('assertion.failed', "Failed: " + e.name);
+        throw "Failed: " + e.name;
       }
       this.assertions.push(assertion);
       return this;
@@ -220,6 +225,11 @@ var StepTest = function () {
   }, {
     key: "addStep",
     value: function addStep(name, cb) {
+      return this.step(name, cb);
+    }
+  }, {
+    key: "step",
+    value: function step(name, cb) {
       var t = this;
       if (this.steps[name] == undefined) {
         this.steps[name] = cb;
@@ -237,16 +247,49 @@ var StepTest = function () {
       c += content;
       c += "\n-------------------------------------------------------";
       c += "\n";
-      console.log(c);
       return this;
     }
   }, {
+    key: "shuffle",
+    value: function shuffle(a) {
+      var j, x, i;
+      for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+      }
+    }
+  }, {
     key: "play",
-    value: function play() {
-      this.start();
-      this.tests.forEach(function (test) {
-        test.play();
-      });
+    value: function play(filter) {
+      var st = this;
+      this.position = 0;
+      var filteredResults = filter ? this.tests.filter(filter) : this.tests;
+      this.start({ length: filteredResults.length });
+      this.shuffle(filteredResults);
+
+      if (this.parallel) {
+        filteredResults.forEach(function (test) {
+          setTimeout(function () {
+            // Detach into thread;
+            test.play();
+          }, 0);
+        });
+      } else {
+        var runTest = function runTest() {
+          filteredResults[st.position].play();
+          filteredResults[st.position].on("finished", function () {
+            st.position += 1;
+            if (filteredResults[st.position]) {
+              setTimeout(function () {
+                runTest();
+              }, st.interval);
+            }
+          });
+        };
+        runTest();
+      }
       return this;
     }
   }, {
@@ -268,12 +311,23 @@ var StepTest = function () {
   }, {
     key: "start",
     value: function start() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var st = this;
       this.on("test.finished", function () {
         var finished = this.tests.filter(function (test) {
           return test.status == "finished";
         });
-        if (finished.length == this.tests.length) {
-          this.trigger("finished");
+
+        var length = void 0;
+        if (typeof options.length == "number") {
+          length = options.length;
+        } else {
+          length = this.tests.length;
+        }
+
+        if (finished.length == length) {
+          st.trigger("finished");
         }
       });
     }
@@ -281,17 +335,9 @@ var StepTest = function () {
     key: "reset",
     value: function reset() {
       this.tests = [];
-    }
-  }, {
-    key: "helpers",
-    value: function helpers() {
-      this.addStep("Wait For", function (item, key) {
-        var s = this.defer();
-
-        this[item].on(key, function () {
-          s.resolve();
-        });
-      });
+      this.position = 0;
+      this.callbacks = {};
+      this.steps = [];
     }
   }]);
 
@@ -302,6 +348,9 @@ StepTest.showPosition = true;
 StepTest.callbacks = {};
 StepTest.steps = [];
 StepTest.tests = [];
+StepTest.interval = 0;
+StepTest.parallel = false;
+
 if (typeof module != "undefined") {
   module.exports = StepTest;
 }
