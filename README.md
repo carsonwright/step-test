@@ -10,8 +10,8 @@ test = StepTest.test("My Test")
 ```
 This means you can use class inheritance, and can change the class prototype. Any shared test data can also be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
 
-#### addStep vrs Step
-* addStep {Class Level} - Tests are broken up into reusable steps and attached to to the class
+#### step {Class Level} vrs Step {Instance Level}
+* step {Class Level} - Tests are broken up into reusable steps and attached to to the class
 * step {Instance Level} - Steps are then stacked up with expectations to create the test.
 
 #### Parallelism and Isolation
@@ -27,15 +27,15 @@ http://stackoverflow.com/questions/27732209/turning-off-eslint-rule-for-a-specif
 import StepTest from 'step-test';
 ```
 
-### Steps
+### Reusable Steps
 ```
-StepTest.addStep("Mount UserComponent", function(){
+StepTest.step("Mount UserComponent", function(){
   render(UserComponent, this.scratch)
 })
-.addStep("Enter Email", function(){
+.step("Enter Email", function(){
   this.scratch.querySelector("#email").value = "here";
 })
-.addStep("Enter Password", function(){
+.step("Enter Password", function(){
   this.scratch.querySelector("#password").value = "here is password";
 })
 ```
@@ -82,6 +82,27 @@ StepTest.test("Awesome")
         })
         .play()
 ```
+
+### Test with Inline Step Declaration
+You can use an inline step declaration if you have not previously declared a step at the class level with the same name.
+```
+StepTest.test("Awesome")
+        .step("Mount UserComponent")
+        .step("Enter Email")
+        .step("Enter Password")
+         /////////////////////////////////////////
+         // Inline Declaration
+         /////////////////////////////////////////
+        .step("Check Remember Me", function(){
+          var rememberMe = this.scratch.querySelector("#remember-me");
+          ReactSimulateClick(rememberMe);
+        })
+        .expect("Should Render UserForm", function(){
+          return this.ok(t.scratch.innerHTML == "<div></div>"); // Chai can be used and it is suggested
+        })
+        .play()
+```
+
 #### Arguments
 ```
 StepTest.test("User Test")
