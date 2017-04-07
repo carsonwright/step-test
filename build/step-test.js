@@ -359,9 +359,10 @@ function StepTestSuite() {
   StepTest.interval = 0;
   StepTest.parallel = false;
 
+  StepTest.Suite = StepTestSuite;
   return StepTest;
 }
-StepTest = StepTestSuite();
+var StepTest = StepTestSuite();
 StepTest.Suite = StepTestSuite;
 
 if (typeof module != "undefined") {
