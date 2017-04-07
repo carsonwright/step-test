@@ -124,12 +124,15 @@ function StepTestSuite() {
         log.push(event.name);
         this.log(log.join(" "));
         this.deferred = false;
-        event.cb.apply(this, [event.options]);
+        try {
+          event.cb.apply(this, [event.options]);
+        } catch (error) {
+          this.log("Failed: " + event.name);
+        }
         if (!this.deferred) {
           this.resolve();
           this.deferred = false;
         }
-
         return this;
       }
     }, {
