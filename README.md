@@ -117,6 +117,31 @@ You may have noticed that ```.play()``` is available, ```.pause()``` is also ava
 
 ### Tags Instead of Suites
 Tags are provided instead of suites because tests often overlap in functionality and suites don't really provide you with helpful organization as a test generally will land in more than one category.
+#### Tag
 ```
-StepTest.test("My Test").tag("Me").tag("test").tag("Development")
+StepTest.test("My Test").tag("My").tag("test").tag("Development")
+```
+#### Tags
+```
+StepTest.test("My Test").tags(["My", "Test", "Development"])
+
+Suggested Structuring could be
+
+var testTags = {}
+testTags.groupFolder = ["src", "./src/groups"];
+testTags.File1 = ["File1", "My Test"].concat(testTags.groupFolder)
+
+StepTest.test("Accepts Proper Values").tags(testTags.File1)
+```
+
+#### Playing Tests with specific tags or steps
+
+In this example it would play all tests that have a tag with "File1" or an event with the name "Accepts". 
+
+()=> is an es6 standard if you find it confusing just replace it when you read with function(){} instead.
+
+```
+StepTest.play(function(test){
+  return test.tags.indexOf("File1") != -1 || test.events.map((e)=> e.name ).indexOf("Accepts") != -1
+})
 ```
