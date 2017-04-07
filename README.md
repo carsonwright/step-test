@@ -147,7 +147,7 @@ StepTest.play(function(test){
 ```
 
 ### The Suite
-Step Test comes with your suite already initialized, however if you wish to split your test suite for some reason it is possible. It is recommended that you place it inside a new context and still refer to it as StepTest since technically you should not be separating and organizing your code by suites.
+Step Test comes with your suite already initialized, however if you wish to split your test suite for some reason it is possible. It is recommended that you place it inside a new context and still refer to it as StepTest since technically you should not be separating and organizing your code by suites. Key reasons would be the ability to completely start fresh as if no other tests have been run, this is done on the Step Test website for each example.
 ```
 function(){
   var StepTest = StepTest.Suite();
