@@ -86,7 +86,6 @@ class StepTest{
       this.trigger('assertion.passed', `Passed: ${e.name}`);
     }else{
       this.trigger('assertion.failed', `Failed: ${e.name}`);
-      throw `Failed: ${e.name}`;
     }
     this.assertions.push(assertion);
     return this;

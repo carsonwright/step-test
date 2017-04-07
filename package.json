@@ -1,6 +1,6 @@
 {
   "name": "step-test",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A test helper for running items step by step",
   "main": "./build/step-test.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-cli": "^6.24.0",
+    "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.0"
   }
 }

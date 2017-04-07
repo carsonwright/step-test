@@ -1,22 +1,24 @@
 const StepTest = require("./src/step-test");
 
-StepTest.addStep("Set Scratch To 1", function(){
+class StepTestBase extends StepTest {}
+
+StepTestBase.addStep("Set Scratch To 1", function(){
   this.scratch = 1;
 });
 
-StepTest.step("Add 1 to Scratch", function(){
+StepTestBase.step("Add 1 to Scratch", function(){
   this.scratch += 1
 });
 
-StepTest.addStep("Remove 1 from Scratch", function(){
+StepTestBase.addStep("Remove 1 from Scratch", function(){
   this.scratch -= 1;
 });
 
-StepTest.addStep("Remove from number from Scratch", function(x){
+StepTestBase.addStep("Remove from number from Scratch", function(x){
   this.scratch -= x;
 });
 
-StepTest.addStep("Test Deferred + 1", function(){
+StepTestBase.addStep("Test Deferred + 1", function(){
   t = this.defer();
   setTimeout(function(){
     t.scratch += 1;
@@ -24,4 +26,4 @@ StepTest.addStep("Test Deferred + 1", function(){
   }, 1000);
 });
 
-module.exports = StepTest;
+module.exports = StepTestBase;

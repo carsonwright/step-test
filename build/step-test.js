@@ -43,6 +43,12 @@ var StepTest = function () {
       return this;
     }
   }, {
+    key: "tags",
+    value: function tags(_tags) {
+      this.tags = this.tags.concat(_tags);
+      return this;
+    }
+  }, {
     key: "step",
     value: function step(name, options) {
       var cb = this.constructor.steps[name];
@@ -84,7 +90,6 @@ var StepTest = function () {
         this.trigger('assertion.passed', "Passed: " + e.name);
       } else {
         this.trigger('assertion.failed', "Failed: " + e.name);
-        throw "Failed: " + e.name;
       }
       this.assertions.push(assertion);
       return this;
@@ -247,6 +252,7 @@ var StepTest = function () {
       c += content;
       c += "\n-------------------------------------------------------";
       c += "\n";
+      console.log(c);
       return this;
     }
   }, {
