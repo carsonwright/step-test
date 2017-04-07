@@ -1,7 +1,7 @@
 
-var StepTestBase = require("./teststeps");
+const StepTestBase = require("./teststeps")
+const StepTest1 = StepTestBase();
 
-class StepTest1 extends StepTestBase {}
 var t = StepTest1.test("Test Scratch 1");
 t.step("Set Scratch To 1");
 t.step("Add 1 to Scratch");
@@ -57,6 +57,7 @@ let timeout = setTimeout(function(){
 },90000)
 
 StepTest1.on("finished", function(){
+  StepTest1.tests
   finished = true;
 
   if(t1.scratch != 1){

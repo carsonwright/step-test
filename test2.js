@@ -1,5 +1,6 @@
 const StepTestBase = require("./teststeps");
-class StepTest2 extends StepTestBase {}
+const StepTest2 = StepTestBase();
+
 (function(){
   t5 = StepTest2.test("Check that options can be passed in").tag("One").tag("Two")
   t5.step("Set Scratch To 1");
