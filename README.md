@@ -115,8 +115,8 @@ StepTest.test("User Test")
 ### Debugging
 You may have noticed that ```.play()``` is available, ```.pause()``` is also available, and ```.next()```. These functions can be run in a step and give you control over when each step advances, this strategy can be extremely helpful when trying to find the offending step as you can keep checking your test and then running ```.next()``` until you find where things went wrong.
 
-### Tags Instead of Suites for Organization
-Tags are provided instead of suites because tests often overlap in functionality and suites don't really provide you with helpful organization as a test generally will land in more than one category.
+### Tags Instead of Suites
+Tags are provided instead of suites because tests often overlap in functionality and suites don't really provide you with helpful organization since a test often will land in more than one category.
 #### Tag
 ```
 StepTest.test("My Test").tag("My").tag("test").tag("Development")
