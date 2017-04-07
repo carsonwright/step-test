@@ -115,7 +115,7 @@ StepTest.test("User Test")
 ### Debugging
 You may have noticed that ```.play()``` is available, ```.pause()``` is also available, and ```.next()```. These functions can be run in a step and give you control over when each step advances, this strategy can be extremely helpful when trying to find the offending step as you can keep checking your test and then running ```.next()``` until you find where things went wrong.
 
-### Tags Instead of Suites
+### Tags Instead of Suites for Organization
 Tags are provided instead of suites because tests often overlap in functionality and suites don't really provide you with helpful organization as a test generally will land in more than one category.
 #### Tag
 ```
@@ -144,4 +144,12 @@ In this example it would play all tests that have a tag with "File1" or an event
 StepTest.play(function(test){
   return test.tags.indexOf("File1") != -1 || test.events.map((e)=> e.name ).indexOf("Accepts") != -1
 })
+```
+
+### The Suite
+Step Test comes with your suite already initialized, however if you wish to split your test suite for some reason it is possible. It is recommended that you place it inside a new context and still refer to it as StepTest since technically you should not be separating and organizing your code by suites.
+```
+function(){
+  var StepTest = StepTest.Suite();
+}
 ```
