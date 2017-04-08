@@ -10,6 +10,10 @@ test = StepTest.test("My Test")
 ```
 This means you can use class inheritance, and can change the class prototype. Any shared test data can also be placed on your current instance. Every instance method has access to ```this``` which is how one can attach ```scratch``` like so ```this.scratch```
 
+#### Demo
+See Step Test in Action and use the playground to experiment
+https://step-test.github.io
+
 #### step {Class Level} vrs Step {Instance Level}
 * step {Class Level} - Tests are broken up into reusable steps and attached to to the class
 * step {Instance Level} - Steps are then stacked up with expectations to create the test.
