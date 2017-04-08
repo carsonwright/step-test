@@ -23,8 +23,14 @@ It is recomended that you use the es5 ```function(){}``` instead of ```()=>{}```
 If you rely on linting heavily here is a solution to ignore the longhand function usage.
 http://stackoverflow.com/questions/27732209/turning-off-eslint-rule-for-a-specific-line
 ### Setup
+For Webpack
 ```
 import StepTest from 'step-test';
+```
+
+For Node
+```
+const StepTest from 'step-test';
 ```
 
 ### Reusable Steps
