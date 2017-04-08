@@ -19,8 +19,8 @@ function StepTestSuite() {
       this.tags = [];
       var t = this;
       this.on("finished", function (data) {
-        this.constructor.trigger("test.finished", this);
         this.constructor.log(this.logs.join("\n"));
+        this.constructor.trigger("test.finished", this);
       });
       this.on("assertion.passed", function (message) {
         this.constructor.trigger("test.assertion.passed", { name: name, message: message });
