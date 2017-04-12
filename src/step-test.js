@@ -231,7 +231,6 @@ function StepTestSuite(){
         })
       }else{
         let runTest = function(){
-          filteredResults[st.position].play()
           filteredResults[st.position].on("finished", function(){
             st.position += 1;
             if(filteredResults[st.position]){
@@ -240,6 +239,7 @@ function StepTestSuite(){
               }, st.interval);
             }
           })
+          filteredResults[st.position].play()
         }
         runTest();
       }

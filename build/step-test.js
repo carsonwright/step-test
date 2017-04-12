@@ -289,7 +289,6 @@ function StepTestSuite() {
           });
         } else {
           var runTest = function runTest() {
-            filteredResults[st.position].play();
             filteredResults[st.position].on("finished", function () {
               st.position += 1;
               if (filteredResults[st.position]) {
@@ -298,6 +297,7 @@ function StepTestSuite() {
                 }, st.interval);
               }
             });
+            filteredResults[st.position].play();
           };
           runTest();
         }
