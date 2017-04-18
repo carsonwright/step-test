@@ -1,4 +1,5 @@
 # Step Test
+![tests](https://travis-ci.org/step-test/step-test.svg?branch=master)
 This framework operates much like cucumber but is class based. 
 ```
 test = new StepTest()
