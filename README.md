@@ -1,5 +1,6 @@
 # Step Test
 ![tests](https://travis-ci.org/step-test/step-test.svg?branch=master)
+[![Code Climate](https://img.shields.io/codeclimate/github/step-test/step-test.svg?style=flat-square)](https://codeclimate.com/github/step-test/step-test)
 
 This framework operates much like cucumber but is class based. 
 ```
