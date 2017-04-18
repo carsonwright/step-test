@@ -8,7 +8,7 @@ function StepTestSuite(){
       this.callbacks = {};
       this.logs = [];
       this.assertions = [];
-      this.tags = [];
+      this.tagged = [];
       let t = this;
       this.on("finished", function(data){
         this.constructor.log(this.logs.join("\n"));
@@ -27,9 +27,6 @@ function StepTestSuite(){
       this.tests.push(stepTestInstance);
       return stepTestInstance;
     }
-    static addStep(name, cb){
-      return this.step(name, cb);
-    }
     static step(name, cb){
       let t = this;
       if(this.steps[name] == undefined){
@@ -44,11 +41,11 @@ function StepTestSuite(){
       return this;
     }
     tag(tag){
-      this.tags.push(tag);
+      this.tagged.push(tag);
       return this;
     }
     tags(tags){
-      this.tags = this.tags.concat(tags);
+      this.tagged = this.tagged.concat(tags);
       return this;
     }
     step(name, options){
@@ -172,7 +169,7 @@ function StepTestSuite(){
       return this;
     }
     log(content){
-      this.logs.push(content);
+      this.constructor.log(content);
       return this;
     }
     start(){
@@ -198,13 +195,7 @@ function StepTestSuite(){
       return this;
     }
     static log(content){
-      let c;
-      c += "\n";
-      c  = "=======================================================\n";
-      c += content;
-      c += "\n-------------------------------------------------------"
-      c += "\n";
-      console.log(c)
+      console.log(content)
       return this;
     }
     static shuffle(a){
@@ -218,32 +209,44 @@ function StepTestSuite(){
     }
     static play(filter){
       let st = this;
+      this.status = "playing";
       this.position = 0;
-      let filteredResults = filter ? this.tests.filter(filter) : this.tests;
-      this.start({length: filteredResults.length});
-      this.shuffle(filteredResults);
+      this.currentPlay = filter ? this.tests.filter(filter) : this.tests;
+      this.start({length: this.currentPlay.length});
+      this.shuffle(this.currentPlay);
       
       if(this.parallel){
-        filteredResults.forEach(function(test){
+        this.currentPlay.forEach(function(test){
           setTimeout(function(){ // Detach into thread;
             test.play();
           }, 0);
         })
       }else{
-        let runTest = function(){
-          filteredResults[st.position].on("finished", function(){
-            st.position += 1;
-            if(filteredResults[st.position]){
-              setTimeout(function(){
-                runTest();
-              }, st.interval);
-            }
-          })
-          filteredResults[st.position].play()
-        }
-        runTest();
+        this.nextTest()
       }
       return this;
+    }
+    static pause(){
+      this.status = "paused";
+      return this;
+    }
+    static next(){
+      this.nextTest();
+      return this;
+    }
+    static nextTest(){
+      let st = this;
+      if(st.currentPlay[st.position]){
+        this.currentPlay[st.position].on("finished", function(){
+          st.position += 1;
+          setTimeout(function(){
+            if(st.currentPlay[st.position] && st.status == "playing"){
+              st.nextTest();
+            }
+          }, st.interval);
+        });
+        this.currentPlay[st.position].play();
+      }
     }
     static on(key, callback){
       this.callbacks[key] = this.callbacks[key] || [];
@@ -281,6 +284,7 @@ function StepTestSuite(){
       this.position = 0;
       this.callbacks = {};
       this.steps = [];
+      return this;
     }
   }
 

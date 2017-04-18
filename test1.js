@@ -31,7 +31,7 @@ t2.step("Remove 1 from Scratch");
 t2.expect("Scratch should Equal 0", function(){
   this.ok(this.scratch == 0);
 });
-t2.expect("This should not error but instead be ... ");
+t2.expect("This should not error but be pending ");
 
 var t3 = StepTest1.test("Test Scratch 3 Defer");
 t3.step("Set Scratch To 1");
@@ -48,6 +48,14 @@ t4.expect("Scratch should Equal", function(){
   this.ok(this.scratch == -2);
 })
 var finishedOne = false;
+
+var t5 = StepTest1.test("Check that failure works");
+t5.expect("Scratch should Equal", function(){
+  this.ok(false);
+})
+
+var t6 = StepTest1.test("Check that options can be passed in")
+t6.step("Step Set");
 
 console.log("FORCE FINISHED TO RUN in 90000 OR FAIL");
 let timeout = setTimeout(function(){
@@ -75,6 +83,9 @@ StepTest1.on("finished", function(){
 
   if(t4.scratch != -2){
     throw "Failed to Set t4 Scratch properly"
+  }
+  if(t5.assertions.filter((a)=>{ return !a }).length == 0){
+    throw "Failed to fail test properly"
   }
   clearTimeout(timeout);
   console.log("test1.js Done")

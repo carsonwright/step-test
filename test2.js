@@ -2,14 +2,15 @@ const StepTestBase = require("./teststeps");
 const StepTest2 = StepTestBase();
 
 (function(){
-  t5 = StepTest2.test("Check that options can be passed in").tag("One").tag("Two")
+  let finished = false;
+  let t5 = StepTest2.test("Check that options can be passed in").tags(["One", "Two"])
   t5.step("Set Scratch To 1");
   t5.step("Remove from number from Scratch", 3)
   t5.expect("Scratch should Equal", function(){
     this.ok(this.scratch == -2);
   })
 
-  t6 = StepTest2.test("Check that options can be passed in").tag("Three").tag("Two")
+  let t6 = StepTest2.test("Check that options can be passed in").tag("Three").tag("Two")
   t6.step("Set Scratch To 1");
   t6.step("Remove from number from Scratch", 3)
   t6.expect("Scratch should Equal", function(){

@@ -1,7 +1,7 @@
 module.exports = function(){
   const StepTest = require("./src/step-test").Suite();
 
-  StepTest.addStep("Set Scratch To 1", function(){
+  StepTest.step("Set Scratch To 1", function(){
     this.scratch = 1;
   });
 
@@ -9,15 +9,17 @@ module.exports = function(){
     this.scratch += 1
   });
 
-  StepTest.addStep("Remove 1 from Scratch", function(){
+  StepTest.step("Remove 1 from Scratch", function(){
     this.scratch -= 1;
   });
 
-  StepTest.addStep("Remove from number from Scratch", function(x){
+  StepTest.step("Remove from number from Scratch", function(x){
     this.scratch -= x;
   });
 
-  StepTest.addStep("Test Deferred + 1", function(){
+  StepTest.step("Step Set", ["Set Scratch To 1", "Remove from number from Scratch"]);
+
+  StepTest.step("Test Deferred + 1", function(){
     t = this.defer();
     setTimeout(function(){
       t.scratch += 1;

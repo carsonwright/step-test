@@ -16,7 +16,7 @@ function StepTestSuite() {
       this.callbacks = {};
       this.logs = [];
       this.assertions = [];
-      this.tags = [];
+      this.tagged = [];
       var t = this;
       this.on("finished", function (data) {
         this.constructor.log(this.logs.join("\n"));
@@ -40,13 +40,13 @@ function StepTestSuite() {
     }, {
       key: "tag",
       value: function tag(_tag) {
-        this.tags.push(_tag);
+        this.tagged.push(_tag);
         return this;
       }
     }, {
       key: "tags",
       value: function tags(_tags) {
-        this.tags = this.tags.concat(_tags);
+        this.tagged = this.tagged.concat(_tags);
         return this;
       }
     }, {
@@ -192,7 +192,7 @@ function StepTestSuite() {
     }, {
       key: "log",
       value: function log(content) {
-        this.logs.push(content);
+        this.constructor.log(content);
         return this;
       }
     }, {
@@ -233,11 +233,6 @@ function StepTestSuite() {
         return stepTestInstance;
       }
     }, {
-      key: "addStep",
-      value: function addStep(name, cb) {
-        return this.step(name, cb);
-      }
-    }, {
       key: "step",
       value: function step(name, cb) {
         var t = this;
@@ -251,13 +246,7 @@ function StepTestSuite() {
     }, {
       key: "log",
       value: function log(content) {
-        var c = void 0;
-        c += "\n";
-        c = "=======================================================\n";
-        c += content;
-        c += "\n-------------------------------------------------------";
-        c += "\n";
-        console.log(c);
+        console.log(content);
         return this;
       }
     }, {
@@ -275,33 +264,51 @@ function StepTestSuite() {
       key: "play",
       value: function play(filter) {
         var st = this;
+        this.status = "playing";
         this.position = 0;
-        var filteredResults = filter ? this.tests.filter(filter) : this.tests;
-        this.start({ length: filteredResults.length });
-        this.shuffle(filteredResults);
+        this.currentPlay = filter ? this.tests.filter(filter) : this.tests;
+        this.start({ length: this.currentPlay.length });
+        this.shuffle(this.currentPlay);
 
         if (this.parallel) {
-          filteredResults.forEach(function (test) {
+          this.currentPlay.forEach(function (test) {
             setTimeout(function () {
               // Detach into thread;
               test.play();
             }, 0);
           });
         } else {
-          var runTest = function runTest() {
-            filteredResults[st.position].on("finished", function () {
-              st.position += 1;
-              if (filteredResults[st.position]) {
-                setTimeout(function () {
-                  runTest();
-                }, st.interval);
-              }
-            });
-            filteredResults[st.position].play();
-          };
-          runTest();
+          this.nextTest();
         }
         return this;
+      }
+    }, {
+      key: "pause",
+      value: function pause() {
+        this.status = "paused";
+        return this;
+      }
+    }, {
+      key: "next",
+      value: function next() {
+        this.nextTest();
+        return this;
+      }
+    }, {
+      key: "nextTest",
+      value: function nextTest() {
+        var st = this;
+        if (st.currentPlay[st.position]) {
+          this.currentPlay[st.position].on("finished", function () {
+            st.position += 1;
+            setTimeout(function () {
+              if (st.currentPlay[st.position] && st.status == "playing") {
+                st.nextTest();
+              }
+            }, st.interval);
+          });
+          this.currentPlay[st.position].play();
+        }
       }
     }, {
       key: "on",
@@ -349,6 +356,7 @@ function StepTestSuite() {
         this.position = 0;
         this.callbacks = {};
         this.steps = [];
+        return this;
       }
     }]);
 
