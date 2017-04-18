@@ -11,7 +11,9 @@ function StepTestSuite(){
       this.tagged = [];
       let t = this;
       this.on("finished", function(data){
-        this.constructor.log(this.logs.join("\n"));
+        if(this.constructor.parallel){
+          this.constructor.log(this.logs.join("\n"));
+        }
         this.constructor.trigger("test.finished", this);
       })
       this.on("assertion.passed", function(message){
@@ -19,6 +21,9 @@ function StepTestSuite(){
       })
       this.on("assertion.failed", function(message){
         this.constructor.trigger("test.assertion.failed", {name, message});
+      })
+      this.on("error", function(message){
+        this.constructor.trigger("error", {name, message});
       })
       return this;
     }
@@ -85,6 +90,7 @@ function StepTestSuite(){
       }else{
         this.log(`Failed: ${e.name}`);
         this.trigger('assertion.failed', `Failed: ${e.name}`);
+        this.trigger("error", e.name);
       }
       this.assertions.push(assertion);
       return this;
@@ -117,6 +123,7 @@ function StepTestSuite(){
         event.cb.apply(this, [event.options]);
       }catch(error){
         this.log(`Failed: ${event.name}`);
+        this.trigger("error", event.name);
       }
       if(!this.deferred){
         this.resolve();
@@ -169,7 +176,11 @@ function StepTestSuite(){
       return this;
     }
     log(content){
-      this.constructor.log(content);
+      if(this.constructor.parallel){
+        this.logs.push(content);
+      }else{
+        this.constructor.log(content);
+      }
       return this;
     }
     start(){

@@ -69,7 +69,6 @@ StepTest1.on("finished", function(){
   finished = true;
 
   if(t1.scratch != 1){
-    console.log(t1);
     throw "Failed to Set t1 Scratch properly"
   }
 
