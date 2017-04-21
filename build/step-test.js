@@ -187,6 +187,7 @@ function StepTestSuite() {
         this.start();
         this.mode = "play";
         this.status = "playing";
+        this.trigger("play");
         this.nextEvent();
         return this;
       }
