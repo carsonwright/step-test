@@ -25,6 +25,7 @@ function StepTestSuite(){
       this.on("error", function(message){
         this.constructor.trigger("error", {name, message});
       })
+      this.trigger("initialized");
       return this;
     }
     static test(name){
