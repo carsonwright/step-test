@@ -33,6 +33,7 @@ function StepTestSuite() {
       this.on("error", function (message) {
         this.constructor.trigger("error", { name: name, message: message });
       });
+      this.trigger("initialized");
       return this;
     }
 
@@ -59,7 +60,7 @@ function StepTestSuite() {
       value: function step(name, options) {
         var cb = this.constructor.steps[name];
         if (!cb) {
-          if (typeof options == "function") {
+          if (typeof options === "function") {
             cb = options;
           } else {
             name = name + " - PENDING";
@@ -108,7 +109,7 @@ function StepTestSuite() {
         var assertions = this.assertions.filter(function (assert) {
           return assert != true;
         });
-        return assertions.length == 0;
+        return assertions.length === 0;
       }
     }, {
       key: "nextEvent",
@@ -164,13 +165,13 @@ function StepTestSuite() {
       key: "end",
       value: function end() {
         var t = this;
-        if (!this.events[this.position] && this.status != "finished") {
+        if (!this.events[this.position] && this.status !== "finished") {
           this.status = "finished";
           this.trigger("finished");
           return null;
         }
-        if (this.mode == "play") {
-          if (typeof this.interval == "number") {
+        if (this.mode === "play") {
+          if (typeof this.interval === "number") {
             setTimeout(function () {
               t.nextEvent();
             }, this.interval);
@@ -313,7 +314,7 @@ function StepTestSuite() {
           this.currentPlay[st.position].on("finished", function () {
             st.position += 1;
             setTimeout(function () {
-              if (st.currentPlay[st.position] && st.status == "playing") {
+              if (st.currentPlay[st.position] && st.status === "playing") {
                 st.nextTest();
               }
             }, st.interval);
@@ -345,17 +346,17 @@ function StepTestSuite() {
         var st = this;
         this.on("test.finished", function () {
           var finished = this.tests.filter(function (test) {
-            return test.status == "finished";
+            return test.status === "finished";
           });
 
           var length = void 0;
-          if (typeof options.length == "number") {
+          if (typeof options.length === "number") {
             length = options.length;
           } else {
             length = this.tests.length;
           }
 
-          if (finished.length == length) {
+          if (finished.length === length) {
             st.trigger("finished");
           }
         });
@@ -387,6 +388,6 @@ function StepTestSuite() {
 var StepTest = StepTestSuite();
 StepTest.Suite = StepTestSuite;
 
-if (typeof module != "undefined") {
+if (typeof module !== "undefined") {
   module.exports = StepTest;
 }
